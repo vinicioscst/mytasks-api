@@ -5,7 +5,8 @@ const envSchema = z.object({
   PORT: z
     .string()
     .nonempty({ error: 'PORT variable is empty' })
-    .transform((val) => Number(val))
+    .transform((val) => Number(val)),
+  DATABASE_URL: z.string().nonempty({ error: 'DATABASE_URL variable is empty' })
 })
 
 export const env = envSchema.parse(process.env)
