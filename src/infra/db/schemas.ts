@@ -4,7 +4,7 @@ import { pgTable, uuid, varchar, date } from 'drizzle-orm/pg-core'
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 60 }),
-  email: varchar('email', { length: 120 }),
+  email: varchar('email', { length: 120 }).unique(),
   password: varchar('password', { length: 60 })
 })
 
