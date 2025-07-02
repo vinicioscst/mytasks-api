@@ -20,7 +20,7 @@ export const tasks = pgTable('tasks', {
   userId: uuid('user_id')
 })
 
-export const postsRelations = relations(tasks, ({ one }) => ({
+export const tasksRelations = relations(tasks, ({ one }) => ({
   user: one(users, {
     fields: [tasks.userId],
     references: [users.id]
