@@ -15,6 +15,13 @@
       "when": 1751461112236,
       "tag": "0001_certain_wong",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751476617105,
+      "tag": "0002_perpetual_rockslide",
+      "breakpoints": true
     }
   ]
 }
