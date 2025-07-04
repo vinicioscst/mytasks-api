@@ -1,6 +1,6 @@
 import express from 'express'
-import { usersRoutes } from './interfaces/http/routes/users.routes'
-import { tasksRoutes } from './interfaces/http/routes/tasks.routes'
+import { usersRoutes } from './presentation/routes/usersRoutes'
+import { tasksRoutes } from './presentation/routes/tasksRoutes'
 
 export const app = express()
 
