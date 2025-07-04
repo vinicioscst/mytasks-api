@@ -1,0 +1,1 @@
+ALTER TABLE "tasks" ALTER COLUMN "is_completed" SET NOT NULL;
