@@ -1,4 +1,4 @@
-import { Task } from '../entities/task'
+import { Task } from '../entities/Task'
 
 export interface ITaskRepository {
   findById(findByUserId: boolean, id: string): Promise<Task | null>

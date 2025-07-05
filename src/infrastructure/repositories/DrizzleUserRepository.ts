@@ -1,4 +1,4 @@
-import { User } from '@/domain/entities/user'
+import { User } from '@/domain/entities/User'
 import { IUserRepository } from '@/domain/repositories/IUserRepository'
 import { db } from '../data'
 import { tasksTable, usersTable } from '../data/schemas'

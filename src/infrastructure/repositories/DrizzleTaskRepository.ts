@@ -1,4 +1,4 @@
-import { Task } from '@/domain/entities/task'
+import { Task } from '@/domain/entities/Task'
 import { ITaskRepository } from '@/domain/repositories/ITaskRepository'
 import { db } from '../data'
 import { tasksTable } from '../data/schemas'
