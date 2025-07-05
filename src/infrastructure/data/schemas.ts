@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, date, boolean } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 export const usersTable = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -7,13 +8,22 @@ export const usersTable = pgTable('users', {
   password: varchar('password', { length: 60 }).notNull()
 })
 
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  tasks: many(tasksTable)
+}))
+
 export const tasksTable = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 60 }).notNull(),
   description: varchar('description', { length: 255 }),
   dueDate: date('due_date', { mode: 'date' }).notNull(),
   isCompleted: boolean('is_completed').notNull().default(false),
-  userId: uuid('user_id')
-    .references(() => usersTable.id, { onDelete: 'cascade' })
-    .notNull()
+  userId: uuid('user_id').notNull()
 })
+
+export const tasksRelations = relations(tasksTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [tasksTable.userId],
+    references: [usersTable.id]
+  })
+}))
