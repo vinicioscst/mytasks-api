@@ -1,10 +1,13 @@
 import { User } from '@/domain/entities/User'
 import { IUserRepository } from '@/domain/repositories/IUserRepository'
 import { db } from '../data'
-import { tasksTable, usersTable } from '../data/schemas'
+import { usersTable } from '../data/schemas'
 import { eq } from 'drizzle-orm'
+import { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
 
-export class DrizzleTaskRepository implements IUserRepository {
+export class DrizzleUserRepository implements IUserRepository {
+  constructor() {}
+
   async findById(id: string): Promise<User | null> {
     const user = await db.query.usersTable.findFirst({
       where: eq(usersTable.id, id),
@@ -29,6 +32,23 @@ export class DrizzleTaskRepository implements IUserRepository {
     if (!user) return null
 
     return new User(user.id, user.name, user.email, user.password, user.tasks)
+  }
+
+  async create(user: TCreateUserRequestDTO): Promise<User> {
+    const [newUser] = await db.insert(usersTable).values(user).returning()
+
+    const userWithTasks = await db.query.usersTable.findFirst({
+      where: eq(usersTable.id, newUser.id),
+      with: { tasks: true }
+    })
+
+    return new User(
+      userWithTasks!.id,
+      userWithTasks!.name,
+      userWithTasks!.email,
+      userWithTasks!.password,
+      userWithTasks!.tasks
+    )
   }
 
   async save(user: User): Promise<void> {
