@@ -16,11 +16,9 @@ export class UserService {
       userData.email
     )
 
-    if (userAlreadyExists) {
-      throw new ConflictError('Email já utilizado')
-    }
+    if (userAlreadyExists) throw new ConflictError('Email já utilizado')
 
-    userData.password = await hash(userData.password, 13)
+    userData.password = await hash(userData.password, 10)
 
     const newUser = await this.userRepository.create(userData)
 
