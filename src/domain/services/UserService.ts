@@ -2,6 +2,7 @@ import { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserReques
 import { IUserRepository } from '../repositories/IUserRepository'
 import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
 import { hash } from 'bcryptjs'
+import { ConflictError } from '@/shared/helpers/ApiErrors'
 
 export class UserService {
   userRepository: IUserRepository
@@ -16,7 +17,7 @@ export class UserService {
     )
 
     if (userAlreadyExists) {
-      throw new Error('Email já utilizado')
+      throw new ConflictError('Email já utilizado')
     }
 
     userData.password = await hash(userData.password, 13)

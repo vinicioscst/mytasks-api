@@ -8,14 +8,10 @@ export class UserController {
     this.userApplicationService = new UserApplicationService()
   }
 
-  async createUser(request: Request, response: Response) {
-    const { body } = request
+  async createUser(req: Request, res: Response) {
+    const { body } = req
     const result = await this.userApplicationService.createUser(body)
 
-    if (result.success) {
-      response.status(201).json(result.data)
-    } else {
-      response.status(400).json({ error: result.error })
-    }
+    res.status(201).json(result)
   }
 }
