@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { ApiError } from '@/shared/helpers/ApiErrors'
 import { ZodError, z } from 'zod/v4'
+import { JsonWebTokenError } from 'jsonwebtoken'
 
 export function errorHandlerMiddleware(
   error: Error,
@@ -14,6 +15,10 @@ export function errorHandlerMiddleware(
 
   if (error instanceof ZodError) {
     return res.status(400).json({ error: z.prettifyError(error) })
+  }
+
+  if (error instanceof JsonWebTokenError) {
+    return res.status(401).json({ error: error.message })
   }
 
   return res.status(500).json({ error: 'Internal server error' })
