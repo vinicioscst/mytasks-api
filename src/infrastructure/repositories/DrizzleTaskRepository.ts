@@ -8,11 +8,31 @@ import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskReques
 export class DrizzleTaskRepository implements ITaskRepository {
   constructor() {}
 
-  async findById(findByUserId: boolean, id: string): Promise<Task | null> {
-    const task = await db.query.tasksTable.findFirst({
-      where: eq(findByUserId ? tasksTable.userId : tasksTable.id, id)
-    })
+  async findById(
+    findByUserId: boolean,
+    id: string
+  ): Promise<Task | Task[] | null> {
+    if (findByUserId) {
+      const tasks = await db.query.tasksTable.findMany({
+        where: eq(tasksTable.userId, id)
+      })
+      if (tasks.length === 0) return []
 
+      return tasks.map((task) => {
+        return new Task(
+          task.id,
+          task.title,
+          task.description,
+          task.dueDate,
+          task.isCompleted,
+          task.userId
+        )
+      })
+    }
+
+    const task = await db.query.tasksTable.findFirst({
+      where: eq(tasksTable.id, id)
+    })
     if (!task) return null
 
     return new Task(
