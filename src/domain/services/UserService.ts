@@ -2,7 +2,8 @@ import { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserReques
 import { IUserRepository } from '../repositories/IUserRepository'
 import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
 import { hash } from 'bcryptjs'
-import { ConflictError } from '@/shared/helpers/ApiErrors'
+import { ConflictError, NotFoundError } from '@/shared/helpers/ApiErrors'
+import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
 
 export class UserService {
   userRepository: IUserRepository
@@ -23,5 +24,20 @@ export class UserService {
     const newUser = await this.userRepository.create(userData)
 
     return newUser
+  }
+
+  async updateUser(userData: TUpdateUserRequestDTO, userId: string) {
+    const user = await this.userRepository.findById(userId)
+    if (!user) throw new NotFoundError('Usuário não encontrado')
+
+    if (userData.password) {
+      userData.password = await hash(userData.password, 10)
+    }
+
+    user.updateUser(userData)
+
+    await this.userRepository.save(user)
+
+    return user
   }
 }

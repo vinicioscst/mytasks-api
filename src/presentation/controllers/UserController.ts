@@ -22,4 +22,13 @@ export class UserController {
 
     res.status(200).json(user)
   }
+
+  async updateUser(req: Request, res: Response) {
+    const { body } = req
+    const { id } = req.params
+
+    const result = await this.userApplicationService.updateUser(body, id)
+
+    res.status(200).json(result)
+  }
 }

@@ -8,7 +8,13 @@ const userController = new UserController()
 
 usersRoutes.use('/:id', authMiddleware, permissionMiddleware)
 
-usersRoutes.post('', userController.createUser)
-usersRoutes.get('/:id', userController.readUser)
-// usersRoutes.patch('/:id')
+usersRoutes.post('', (req: Request, res: Response) =>
+  userController.createUser(req, res)
+)
+usersRoutes.get('/:id', (req: Request, res: Response) =>
+  userController.readUser(req, res)
+)
+usersRoutes.patch('/:id', (req: Request, res: Response) =>
+  userController.updateUser(req, res)
+)
 // usersRoutes.delete('/:id')

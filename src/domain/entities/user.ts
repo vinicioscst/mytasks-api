@@ -1,3 +1,4 @@
+import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
 import { Task } from './Task'
 
 export class User {
@@ -8,4 +9,8 @@ export class User {
     public password: string,
     public tasks: Task[]
   ) {}
+
+  updateUser(data: TUpdateUserRequestDTO) {
+    Object.assign(this, data)
+  }
 }
