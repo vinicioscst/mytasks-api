@@ -3,6 +3,7 @@ import { ITaskRepository } from '@/domain/repositories/ITaskRepository'
 import { db } from '../data'
 import { tasksTable } from '../data/schemas'
 import { eq } from 'drizzle-orm'
+import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
 
 export class DrizzleTaskRepository implements ITaskRepository {
   constructor() {}
@@ -21,6 +22,25 @@ export class DrizzleTaskRepository implements ITaskRepository {
       task.dueDate,
       task.isCompleted,
       task.userId
+    )
+  }
+
+  async create(task: TCreateTaskRequestDTO, userId: string): Promise<Task> {
+    const [newTask] = await db
+      .insert(tasksTable)
+      .values({
+        ...task,
+        userId
+      })
+      .returning()
+
+    return new Task(
+      newTask.id,
+      newTask.title,
+      newTask.description,
+      newTask.dueDate,
+      newTask.isCompleted,
+      newTask.userId
     )
   }
 
