@@ -17,4 +17,6 @@ usersRoutes.get('/:id', (req: Request, res: Response) =>
 usersRoutes.patch('/:id', (req: Request, res: Response) =>
   userController.updateUser(req, res)
 )
-// usersRoutes.delete('/:id')
+usersRoutes.delete('/:id', (req: Request, res: Response) =>
+  userController.deleteUser(req, res)
+)

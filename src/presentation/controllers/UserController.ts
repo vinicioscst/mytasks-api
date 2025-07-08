@@ -31,4 +31,11 @@ export class UserController {
 
     res.status(200).json(result)
   }
+
+  async deleteUser(req: Request, res: Response) {
+    const { id } = req.params
+    await this.userApplicationService.deleteUser(id)
+
+    res.status(204).json()
+  }
 }

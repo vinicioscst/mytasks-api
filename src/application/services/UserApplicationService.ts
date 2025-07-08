@@ -26,4 +26,8 @@ export class UserApplicationService {
 
     return response
   }
+
+  async deleteUser(id: string) {
+    await this.userService.deleteUser(id)
+  }
 }
