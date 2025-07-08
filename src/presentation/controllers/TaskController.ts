@@ -1,5 +1,5 @@
 import { TaskApplicationService } from '@/application/services/TaskApplicationService'
-import { NotFoundError } from '@/shared/helpers/ApiErrors'
+import { BadRequestError, NotFoundError } from '@/shared/helpers/ApiErrors'
 import { Request, Response } from 'express'
 
 export class TaskController {
@@ -15,6 +15,24 @@ export class TaskController {
     if (!user) throw new NotFoundError('Usuário não encontrado')
 
     const result = await this.taskApplicationService.createTask(body, user.id)
+
+    res.status(200).json(result)
+  }
+
+  async readAllTasks(_req: Request, res: Response) {
+    const { user } = res.locals
+    if (!user) throw new NotFoundError('Usuário não encontrado')
+
+    const result = await this.taskApplicationService.readAllTasks(user.id)
+
+    res.status(200).json(result)
+  }
+
+  async readTask(req: Request, res: Response) {
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Id não informado')
+
+    const result = await this.taskApplicationService.readTask(id)
 
     res.status(200).json(result)
   }
