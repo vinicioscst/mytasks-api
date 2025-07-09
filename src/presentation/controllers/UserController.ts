@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { UserApplicationService } from '@/application/services/UserApplicationService'
-import { NotFoundError } from '@/shared/helpers/ApiErrors'
+import { BadRequestError, NotFoundError } from '@/shared/helpers/ApiErrors'
 
 export class UserController {
   userApplicationService: UserApplicationService
@@ -26,6 +26,7 @@ export class UserController {
   async updateUser(req: Request, res: Response) {
     const { body } = req
     const { id } = req.params
+    if (!id) throw new BadRequestError('Id não informado')
 
     const result = await this.userApplicationService.updateUser(body, id)
 
@@ -34,6 +35,8 @@ export class UserController {
 
   async deleteUser(req: Request, res: Response) {
     const { id } = req.params
+    if (!id) throw new BadRequestError('Id não informado')
+
     await this.userApplicationService.deleteUser(id)
 
     res.status(204).json()
