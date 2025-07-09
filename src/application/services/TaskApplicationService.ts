@@ -30,18 +30,22 @@ export class TaskApplicationService {
     return response
   }
 
-  async readTask(taskId: string) {
-    const task = await this.taskService.readTask(taskId)
+  async readTask(id: string) {
+    const task = await this.taskService.readTask(id)
     const response = ReadTaskResponseDTO.parse(task)
 
     return response
   }
 
-  async updateTask(body: unknown, taskId: string) {
+  async updateTask(body: unknown, id: string) {
     const parsedBody = UpdateTaskRequestDTO.parse(body)
-    const task = await this.taskService.updateTask(parsedBody, taskId)
+    const task = await this.taskService.updateTask(parsedBody, id)
     const response = UpdateTaskResponseDTO.parse(task)
 
     return response
+  }
+
+  async deleteTask(id: string) {
+    await this.taskService.deleteTask(id)
   }
 }

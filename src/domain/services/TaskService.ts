@@ -23,19 +23,24 @@ export class TaskService {
     return tasks
   }
 
-  async readTask(taskId: string) {
-    const task = await this.taskRepository.findById(false, taskId)
+  async readTask(id: string) {
+    const task = await this.taskRepository.findById(false, id)
 
     return task
   }
 
-  async updateTask(taskData: TUpdateTaskRequestDTO, taskId: string) {
-    const task = (await this.taskRepository.findById(false, taskId)) as Task
+  async updateTask(taskData: TUpdateTaskRequestDTO, id: string) {
+    const task = (await this.taskRepository.findById(false, id)) as Task
 
     task.updateTask(taskData)
 
     await this.taskRepository.save(task)
 
     return task
+  }
+
+  async deleteTask(id: string) {
+    await this.taskRepository.findById(false, id)
+    await this.taskRepository.delete(id)
   }
 }

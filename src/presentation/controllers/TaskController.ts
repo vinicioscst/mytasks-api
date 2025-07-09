@@ -46,4 +46,13 @@ export class TaskController {
 
     res.status(200).json(result)
   }
+
+  async deleteTask(req: Request, res: Response) {
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Id não informado')
+
+    await this.taskApplicationService.deleteTask(id)
+
+    res.status(204).json()
+  }
 }
