@@ -4,19 +4,17 @@ import { db } from '../data'
 import { tasksTable } from '../data/schemas'
 import { eq } from 'drizzle-orm'
 import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
+import { NotFoundError } from '@/shared/helpers/ApiErrors'
 
 export class DrizzleTaskRepository implements ITaskRepository {
   constructor() {}
 
-  async findById(
-    findByUserId: boolean,
-    id: string
-  ): Promise<Task | Task[] | null> {
+  async findById(findByUserId: boolean, id: string): Promise<Task | Task[]> {
     if (findByUserId) {
       const tasks = await db.query.tasksTable.findMany({
         where: eq(tasksTable.userId, id)
       })
-      if (tasks.length === 0) return []
+      if (!tasks) throw new NotFoundError('Usuário não encontrado')
 
       return tasks.map((task) => {
         return new Task(
@@ -33,7 +31,7 @@ export class DrizzleTaskRepository implements ITaskRepository {
     const task = await db.query.tasksTable.findFirst({
       where: eq(tasksTable.id, id)
     })
-    if (!task) return null
+    if (!task) throw new NotFoundError('Tarefa não encontrada')
 
     return new Task(
       task.id,
