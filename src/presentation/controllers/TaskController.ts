@@ -36,4 +36,14 @@ export class TaskController {
 
     res.status(200).json(result)
   }
+
+  async updateTask(req: Request, res: Response) {
+    const { body } = req
+    const { id } = req.params
+    if (!id) throw new BadRequestError('Id não informado')
+
+    const result = await this.taskApplicationService.updateTask(body, id)
+
+    res.status(200).json(result)
+  }
 }

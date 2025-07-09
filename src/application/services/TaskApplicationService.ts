@@ -5,6 +5,8 @@ import {
   ReadAllTasksResponseDTO,
   ReadTaskResponseDTO
 } from '@/presentation/dtos/task/ReadTaskResponseDTO'
+import { UpdateTaskRequestDTO } from '@/presentation/dtos/task/UpdateTaskRequestDTO'
+import { UpdateTaskResponseDTO } from '@/presentation/dtos/task/UpdateTaskResponseDTO'
 
 export class TaskApplicationService {
   taskService: TaskService
@@ -31,6 +33,14 @@ export class TaskApplicationService {
   async readTask(taskId: string) {
     const task = await this.taskService.readTask(taskId)
     const response = ReadTaskResponseDTO.parse(task)
+
+    return response
+  }
+
+  async updateTask(body: unknown, taskId: string) {
+    const parsedBody = UpdateTaskRequestDTO.parse(body)
+    const task = await this.taskService.updateTask(parsedBody, taskId)
+    const response = UpdateTaskResponseDTO.parse(task)
 
     return response
   }
