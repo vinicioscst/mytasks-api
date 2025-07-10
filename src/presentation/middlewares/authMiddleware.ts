@@ -2,7 +2,7 @@ import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUser
 import { env } from '@/shared/config/env'
 import { UnauthorizedError } from '@/shared/helpers/ApiErrors'
 import { NextFunction, Request, Response } from 'express'
-import { JsonWebTokenError, verify } from 'jsonwebtoken'
+import { verify } from 'jsonwebtoken'
 
 type TokenPayload = {
   id: string

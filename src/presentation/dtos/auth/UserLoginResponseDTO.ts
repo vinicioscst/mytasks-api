@@ -1,5 +1,4 @@
 import { z } from 'zod/v4'
-import { CreateUserRequestDTO } from '../user/CreateUserRequestDTO'
 
 export const UserLoginResponseDTO = z.object({
   user: z.object({
