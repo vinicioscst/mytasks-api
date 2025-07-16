@@ -16,12 +16,11 @@ export async function permissionMiddleware(
   const { id } = req.params
   if (!id) throw new BadRequestError('Id não informado')
 
-  const isUser = user.id === id
   const isUserTask = user.tasks.some(
     (task) => task.id === id && task.userId === user.id
   )
 
-  if (!isUser && !isUserTask) throw new ForbiddenError('Acesso não permitido')
+  if (!isUserTask) throw new ForbiddenError('Acesso não permitido')
 
   next()
 }
