@@ -38,7 +38,7 @@ export class DrizzleUserRepository implements IUserRepository {
     return new User(user.id, user.name, user.email, user.password, tasks)
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await db.query.usersTable.findFirst({
       where: eq(usersTable.email, email),
       with: {
@@ -46,7 +46,7 @@ export class DrizzleUserRepository implements IUserRepository {
       }
     })
 
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) return null
 
     const tasks = user.tasks.map((task) => {
       if (!task) {
