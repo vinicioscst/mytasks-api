@@ -22,5 +22,13 @@ export const CreateUserRequestDTO = z.object({
       'Senha deve conter pelo menos um caractere especial'
     )
 })
-
 export type TCreateUserRequestDTO = z.infer<typeof CreateUserRequestDTO>
+
+export const CreateUserRequestWithAvatarDTO = CreateUserRequestDTO.extend({
+  avatar: z
+    .string({ error: 'Avatar é obrigatório' })
+    .max(255, { error: 'Avatar deve conter no máximo 255 caracteres' })
+})
+export type TCreateUserRequestWithAvatarDTO = z.infer<
+  typeof CreateUserRequestWithAvatarDTO
+>

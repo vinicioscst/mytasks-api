@@ -6,6 +6,7 @@ export class User {
     public readonly id: string,
     public name: string,
     public email: string,
+    public avatar: string,
     public password: string,
     public tasks: Task[]
   ) {}

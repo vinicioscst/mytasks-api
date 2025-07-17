@@ -3,7 +3,7 @@ import { IUserRepository } from '@/domain/repositories/IUserRepository'
 import { db } from '../data'
 import { usersTable } from '../data/schemas'
 import { eq } from 'drizzle-orm'
-import { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
+import { TCreateUserRequestWithAvatarDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
 import { Task } from '@/domain/entities/Task'
 import { ApiError, NotFoundError } from '@/shared/helpers/ApiErrors'
 
@@ -35,7 +35,14 @@ export class DrizzleUserRepository implements IUserRepository {
       )
     })
 
-    return new User(user.id, user.name, user.email, user.password, tasks)
+    return new User(
+      user.id,
+      user.name,
+      user.email,
+      user.avatar,
+      user.password,
+      tasks
+    )
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -63,10 +70,17 @@ export class DrizzleUserRepository implements IUserRepository {
       )
     })
 
-    return new User(user.id, user.name, user.email, user.password, tasks)
+    return new User(
+      user.id,
+      user.name,
+      user.email,
+      user.avatar,
+      user.password,
+      tasks
+    )
   }
 
-  async create(user: TCreateUserRequestDTO): Promise<User> {
+  async create(user: TCreateUserRequestWithAvatarDTO): Promise<User> {
     const [newUser] = await db.insert(usersTable).values(user).returning()
     if (!newUser) {
       throw new ApiError('Falha ao criar o usuário', 500)
@@ -99,6 +113,7 @@ export class DrizzleUserRepository implements IUserRepository {
       userWithTasks.id,
       userWithTasks.name,
       userWithTasks.email,
+      userWithTasks.avatar,
       userWithTasks.password,
       tasks
     )

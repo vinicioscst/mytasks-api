@@ -4,6 +4,7 @@ import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUser
 import { hash } from 'bcryptjs'
 import { ConflictError, NotFoundError } from '@/shared/helpers/ApiErrors'
 import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
+import { createHash } from 'node:crypto'
 
 export class UserService {
   userRepository: IUserRepository
@@ -16,12 +17,16 @@ export class UserService {
     const userAlreadyExists = await this.userRepository.findByEmail(
       userData.email
     )
-
     if (userAlreadyExists) throw new ConflictError('Email já utilizado')
 
     userData.password = await hash(userData.password, 10)
 
-    const newUser = await this.userRepository.create(userData)
+    const hashGenerator = createHash('sha256')
+    const avatar = hashGenerator
+      .update(userData.email.toLowerCase())
+      .digest('hex')
+
+    const newUser = await this.userRepository.create({ ...userData, avatar })
 
     return newUser
   }

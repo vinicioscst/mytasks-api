@@ -4,7 +4,8 @@ export const UserLoginResponseDTO = z.object({
   user: z.object({
     id: z.uuid(),
     name: z.string(),
-    email: z.string()
+    email: z.string(),
+    avatar: z.string()
   }),
   token: z.string()
 })
