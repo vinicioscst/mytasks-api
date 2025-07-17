@@ -13,7 +13,7 @@ export async function authMiddleware(
   const token = req.cookies.token
   if (!token) throw new UnauthorizedError('Token ausente')
 
-  const { id, exp } = verify(token, env.JWT_SECRET) as TokenPayload
+  const { id, email, exp } = verify(token, env.JWT_SECRET) as TokenPayload
 
   const expirationTime = exp * 1000
   const currentTime = Date.now()
@@ -22,7 +22,8 @@ export async function authMiddleware(
     throw new UnauthorizedError('Token inválido')
 
   const user = await new DrizzleUserRepository().findById(id)
-  if (!user) throw new UnauthorizedError('Token inválido')
+  if (!user || user.email !== email)
+    throw new UnauthorizedError('Token inválido')
 
   const { password, ...userInfo } = user
   res.locals.user = userInfo

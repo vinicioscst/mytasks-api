@@ -22,7 +22,8 @@ export class AuthService {
 
     const token = sign(
       {
-        id: user.id
+        id: user.id,
+        email: user.email
       },
       env.JWT_SECRET,
       {
