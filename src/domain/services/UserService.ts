@@ -26,7 +26,10 @@ export class UserService {
       .update(userData.email.toLowerCase())
       .digest('hex')
 
-    const newUser = await this.userRepository.create({ ...userData, avatar })
+    const newUser = await this.userRepository.create({
+      ...userData,
+      avatar: `https://gravatar.com/avatar/${avatar}`
+    })
 
     return newUser
   }
