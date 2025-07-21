@@ -9,7 +9,10 @@ export const CreateTaskRequestDTO = z.object({
     .string({ error: 'Descrição deve ser texto' })
     .max(255, { error: 'Descrição deve conter no máximo 255 caracteres' })
     .nullable(),
-  dueDate: z.date({ error: 'Vencimento deve ser uma data' }).nonoptional(),
+  dueDate: z
+    .string({ error: 'Vencimento deve ser uma data' })
+    .transform((value) => new Date(value))
+    .nonoptional(),
   isCompleted: z
     .boolean({ error: 'Condição deve ser um booleano' })
     .nonoptional()
