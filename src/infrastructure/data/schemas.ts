@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, date, boolean } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, varchar, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 
 export const usersTable = pgTable('users', {
@@ -17,7 +17,10 @@ export const tasksTable = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 60 }).notNull(),
   description: varchar('description', { length: 255 }),
-  dueDate: date('due_date', { mode: 'date' }).notNull(),
+  dueDate: timestamp('due_date', {
+    withTimezone: true,
+    mode: 'date'
+  }).notNull(),
   isCompleted: boolean('is_completed').notNull().default(false),
   userId: uuid('user_id').notNull()
 })
