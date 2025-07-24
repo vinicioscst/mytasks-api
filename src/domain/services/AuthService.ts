@@ -1,10 +1,9 @@
 import { IUserRepository } from '../repositories/IUserRepository'
 import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
 import { TUserLoginRequestDTO } from '@/presentation/dtos/auth/UserLoginRequestDTO'
-import { env } from '@/shared/config/env'
+import { generateToken } from '@/shared/actions/generate-token'
 import { UnauthorizedError } from '@/shared/helpers/ApiErrors'
 import { compare } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
 
 export class AuthService {
   userRepository: IUserRepository
@@ -20,16 +19,9 @@ export class AuthService {
     const passwordMatches = await compare(loginData.password, user.password)
     if (!passwordMatches) throw new UnauthorizedError('Credenciais inválidas')
 
-    const token = sign(
-      {
-        id: user.id,
-        email: user.email
-      },
-      env.JWT_SECRET,
-      {
-        expiresIn: '1d'
-      }
-    )
+    const tokenExpiration = 60 * 60 * 24
+
+    const token = generateToken(user.id, user.email, tokenExpiration)
 
     return { user, token }
   }

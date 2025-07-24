@@ -1,7 +1,10 @@
 import { Request, Response } from 'express'
 import { UserApplicationService } from '@/application/services/UserApplicationService'
 import { BadRequestError, NotFoundError } from '@/shared/helpers/ApiErrors'
-import { createHash } from 'node:crypto'
+import { generateToken } from '@/shared/actions/generate-token'
+import { verify } from 'jsonwebtoken'
+import { env } from '@/shared/config/env'
+import { TokenPayload } from '@/shared/types/token-payload'
 
 export class UserController {
   userApplicationService: UserApplicationService
@@ -21,12 +24,7 @@ export class UserController {
     const { user } = res.locals
     if (!user) throw new NotFoundError('Usuário não encontrado')
 
-    const hash = createHash('sha256')
-    const avatar = hash.update(user.email.toLowerCase()).digest('hex')
-
-    res
-      .status(200)
-      .json({ ...user, avatar: `https://gravatar.com/avatar/${avatar}` })
+    res.status(200).json(user)
   }
 
   async logoutUser(_req: Request, res: Response) {
@@ -49,7 +47,22 @@ export class UserController {
 
     const result = await this.userApplicationService.updateUser(body, id)
 
-    res.status(200).json(result)
+    if (res.locals.user!.email !== result.email) {
+      const tokenExpiration = 60 * 60 * 24
+      const token = generateToken(result.id, result.email, tokenExpiration)
+
+      const { exp } = verify(token, env.JWT_SECRET) as TokenPayload
+
+      res
+        .status(200)
+        .cookie('token', token, {
+          httpOnly: true,
+          expires: new Date(exp * 1000)
+        })
+        .json(result)
+    } else {
+      res.status(200).json(result)
+    }
   }
 
   async deleteUser(req: Request, res: Response) {

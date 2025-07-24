@@ -42,6 +42,15 @@ export class UserService {
       userData.password = await hash(userData.password, 10)
     }
 
+    if (userData.email) {
+      const hashGenerator = createHash('sha256')
+      const avatar = hashGenerator
+        .update(userData.email.toLowerCase())
+        .digest('hex')
+
+      userData.avatar = `https://gravatar.com/avatar/${avatar}`
+    }
+
     user.updateUser(userData)
 
     await this.userRepository.save(user)

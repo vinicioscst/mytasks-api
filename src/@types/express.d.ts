@@ -8,6 +8,7 @@ declare global {
             id: string
             name: string
             email: string
+            avatar: string
             tasks: Task[]
           }
         | undefined
