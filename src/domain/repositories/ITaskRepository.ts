@@ -6,4 +6,5 @@ export interface ITaskRepository {
   create(task: TCreateTaskRequestDTO, userId: string): Promise<Task>
   save(task: Task): Promise<void>
   delete(id: string): Promise<void>
+  deleteMany(userId: string): Promise<void>
 }

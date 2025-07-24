@@ -13,6 +13,9 @@ tasksRoutes.post('', (req: Request, res: Response) =>
 tasksRoutes.get('', (req: Request, res: Response) =>
   taskController.readAllTasks(req, res)
 )
+tasksRoutes.delete('/completed', (req: Request, res: Response) =>
+  taskController.deleteCompletedTasks(req, res)
+)
 
 tasksRoutes.use('/:id', permissionMiddleware)
 tasksRoutes.get('/:id', (req: Request, res: Response) =>

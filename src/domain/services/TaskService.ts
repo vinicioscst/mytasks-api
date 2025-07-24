@@ -43,4 +43,8 @@ export class TaskService {
     await this.taskRepository.findById(false, id)
     await this.taskRepository.delete(id)
   }
+
+  async deleteCompletedTasks(userId: string) {
+    await this.taskRepository.delete(userId)
+  }
 }

@@ -48,4 +48,8 @@ export class TaskApplicationService {
   async deleteTask(id: string) {
     await this.taskService.deleteTask(id)
   }
+
+  async deleteCompletedTasks(userId: string) {
+    await this.taskService.deleteCompletedTasks(userId)
+  }
 }

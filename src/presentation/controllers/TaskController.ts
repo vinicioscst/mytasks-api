@@ -55,4 +55,13 @@ export class TaskController {
 
     res.status(204).json()
   }
+
+  async deleteCompletedTasks(req: Request, res: Response) {
+    const userId = res.locals.user!.id
+    if (!userId) throw new NotFoundError('Usuário não encontrado')
+
+    await this.taskApplicationService.deleteCompletedTasks(userId)
+
+    res.status(204).json()
+  }
 }

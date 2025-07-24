@@ -2,7 +2,7 @@ import { Task } from '@/domain/entities/Task'
 import { ITaskRepository } from '@/domain/repositories/ITaskRepository'
 import { db } from '../data'
 import { tasksTable } from '../data/schemas'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
 import { NotFoundError } from '@/shared/helpers/ApiErrors'
 
@@ -68,5 +68,13 @@ export class DrizzleTaskRepository implements ITaskRepository {
 
   async delete(id: string): Promise<void> {
     await db.delete(tasksTable).where(eq(tasksTable.id, id))
+  }
+
+  async deleteMany(userId: string): Promise<void> {
+    await db
+      .delete(tasksTable)
+      .where(
+        and(eq(tasksTable.userId, userId), eq(tasksTable.isCompleted, true))
+      )
   }
 }
