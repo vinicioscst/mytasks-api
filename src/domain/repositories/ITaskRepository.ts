@@ -2,7 +2,7 @@ import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskReques
 import { Task } from '../entities/Task'
 
 export interface ITaskRepository {
-  findById(findByUserId: boolean, id: string): Promise<Task | Task[]>
+  findById(id: string): Promise<Task>
   create(task: TCreateTaskRequestDTO, userId: string): Promise<Task>
   save(task: Task): Promise<void>
   delete(id: string): Promise<void>

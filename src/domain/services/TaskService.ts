@@ -17,20 +17,8 @@ export class TaskService {
     return newTask
   }
 
-  async readAllTaks(userId: string) {
-    const tasks = await this.taskRepository.findById(true, userId)
-
-    return tasks
-  }
-
-  async readTask(id: string) {
-    const task = await this.taskRepository.findById(false, id)
-
-    return task
-  }
-
   async updateTask(taskData: TUpdateTaskRequestDTO, id: string) {
-    const task = (await this.taskRepository.findById(false, id)) as Task
+    const task = await this.taskRepository.findById(id)
 
     task.updateTask(taskData)
 
@@ -40,7 +28,7 @@ export class TaskService {
   }
 
   async deleteTask(id: string) {
-    await this.taskRepository.findById(false, id)
+    await this.taskRepository.findById(id)
     await this.taskRepository.delete(id)
   }
 

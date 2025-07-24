@@ -9,25 +9,7 @@ import { NotFoundError } from '@/shared/helpers/ApiErrors'
 export class DrizzleTaskRepository implements ITaskRepository {
   constructor() {}
 
-  async findById(findByUserId: boolean, id: string): Promise<Task | Task[]> {
-    if (findByUserId) {
-      const tasks = await db.query.tasksTable.findMany({
-        where: eq(tasksTable.userId, id)
-      })
-      if (!tasks) throw new NotFoundError('Usuário não encontrado')
-
-      return tasks.map((task) => {
-        return new Task(
-          task.id,
-          task.title,
-          task.description,
-          task.dueDate,
-          task.isCompleted,
-          task.userId
-        )
-      })
-    }
-
+  async findById(id: string): Promise<Task> {
     const task = await db.query.tasksTable.findFirst({
       where: eq(tasksTable.id, id)
     })
