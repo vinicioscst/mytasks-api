@@ -5,6 +5,8 @@ import { authRoute } from './presentation/routes/authRoute'
 import { errorHandlerMiddleware } from './presentation/middlewares/errorHandlerMiddleware'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { serve, setup } from 'swagger-ui-express'
+import swaggerConfig from './shared/config/swagger.json'
 
 export const app = express()
 
@@ -19,6 +21,16 @@ app.use(
   })
 )
 
+app.use(
+  '/api/docs',
+  serve,
+  setup(swaggerConfig, {
+    customSiteTitle: 'My Tasks - Documentação da API',
+    swaggerOptions: {
+      supportedSubmitMethods: []
+    }
+  })
+)
 app.use('/api/users', usersRoutes)
 app.use('/api/auth', authRoute)
 app.use('/api/tasks', tasksRoutes)

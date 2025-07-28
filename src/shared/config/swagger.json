@@ -1,0 +1,847 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "1.0",
+    "title": "Documentação da API",
+    "description": "## Visão Geral\nA API do projeto My Tasks fornece endpoints para operações CRUD tanto para usuários quanto para suas tarefas, incluindo funcionalidades de autenticação e autorização.\n\n## Funcionalidades Principais\n- **Autenticação**: Sistema de login com tokens JWT\n- **Gerenciamento de Usuários**: CRUD completo de usuários\n- **Gerenciamento de Tarefas**: CRUD completo de tarefas\n- **Validação**: Validação e tratativa de dados da requisição\n\n## Autenticação\nEsta API utiliza autenticação com token JWT. Para acessar endpoints protegidos:\n1. Faça login através do endpoint `/api/auth`\n2. Ao fazer uma requisição, inclua as `credentials` para garantir que o token armazenado nos cookies seja enviado\n\n## Códigos de Status\n- `200` - OK\n- `201` - Recurso criado\n- `204` - Sem conteúdo\n- `400` - Solicitação Inválida\n- `401` - Não autorizado\n- `403` - Acesso negado\n- `404` - Recurso não encontrado\n- `409` - Conflito\n- `500` - Erro interno do servidor\n\n---\n\n**Suporte**: Para dúvidas ou problemas, crie uma issue no nosso [**repositório**](https://github.com/vinicioscst/mytasks-api/issues)\n"
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Requisição referente a autenticação"
+    },
+    {
+      "name": "users",
+      "description": "Requisições referentes aos usuários"
+    },
+    {
+      "name": "tasks",
+      "description": "Requisições referentes as tarefas"
+    }
+  ],
+  "paths": {
+    "/api/auth": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Login do usuário",
+        "requestBody": {
+          "description": "Email e senha cadastrados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "post": {
+        "tags": ["users"],
+        "summary": "Criar usuário",
+        "requestBody": {
+          "description": "Email e senha cadastrados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "get": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["users"],
+        "summary": "Ler dados do usuário",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/users/logout": {
+      "post": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["users"],
+        "summary": "Deslogar usuário do sistema",
+        "responses": {
+          "204": {
+            "description": "Sem conteúdo"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "patch": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["users"],
+        "summary": "Editar usuário",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "Id do usuário (formato UUID)"
+          }
+        ],
+        "requestBody": {
+          "description": "Propriedades que serão atualizadas",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["users"],
+        "summary": "Deletar usuário",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "Id do usuário (formato UUID)"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sem conteúdo"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/tasks/": {
+      "post": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["tasks"],
+        "summary": "Criar tarefa",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/tasks/{id}": {
+      "patch": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["tasks"],
+        "summary": "Atualizar tarefa",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "Id da tarefa (formato UUID)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskRequest"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["tasks"],
+        "summary": "Deletar tarefa",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true,
+            "description": "Id da tarefa (formato UUID)"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sem conteúdo"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/api/tasks/completed": {
+      "delete": {
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "tags": ["tasks"],
+        "summary": "Deletar todas as tarefas completas",
+        "responses": {
+          "204": {
+            "description": "Sem conteúdo"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "required": ["user"],
+        "properties": {
+          "user": {
+            "type": "object",
+            "required": ["id", "name", "email", "avatar", "tasks"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateUserRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 60,
+            "description": "Nome deve conter pelo menos 3 caracteres e no máximo 60 caracteres"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Email deve conter no máximo 120 caracteres"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 60,
+            "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).*$",
+            "description": "Senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula, um número e um caractere especial"
+          }
+        }
+      },
+      "CreateUserResponse": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ReadUserResponse": {
+        "type": "object",
+        "required": ["user"],
+        "properties": {
+          "user": {
+            "type": "object",
+            "required": ["id", "name", "email", "avatar", "tasks"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "tasks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 60,
+            "description": "Nome deve conter pelo menos 3 caracteres e no máximo 60 caracteres"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Email deve conter no máximo 120 caracteres"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 60,
+            "pattern": "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^&*-]).*$",
+            "description": "Senha deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula, um úmero e um caractere especial"
+          }
+        }
+      },
+      "UpdateUserResponse": {
+        "type": "object",
+        "required": ["id", "email", "avatar"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "required": ["title", "dueDate", "isCompleted"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Título é obrigatório"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "nullable": true,
+            "description": "Descrição deve conter no máximo 255 caracteres"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Vencimento deve ser uma data"
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "description": "Condição deve ser um booleano"
+          }
+        }
+      },
+      "CreateTaskResponse": {
+        "type": "object",
+        "required": ["id", "title", "description", "dueDate", "isCompleted"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "UpdateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Título é obrigatório"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 255,
+            "nullable": true,
+            "description": "Descrição deve conter no máximo 255 caracteres"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Vencimento deve ser uma data"
+          },
+          "isCompleted": {
+            "type": "boolean",
+            "description": "Condição deve ser um booleano"
+          }
+        }
+      },
+      "UpdateTaskResponse": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Mensagem de erro"
+          }
+        },
+        "example": {
+          "error": "Erro interno do servidor"
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "description": "Detalhes do erro de validação formatado pelo Zod"
+          }
+        },
+        "example": {
+          "error": {
+            "issues": [
+              {
+                "code": "invalid_type",
+                "expected": "string",
+                "received": "undefined",
+                "path": ["email"],
+                "message": "Required"
+              }
+            ]
+          }
+        }
+      },
+      "JWTError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Mensagem de erro relacionada ao token JWT"
+          }
+        },
+        "example": {
+          "error": "invalid token"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Requisição inválida - dados fornecidos são inválidos",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              ]
+            },
+            "examples": {
+              "badRequest": {
+                "summary": "Erro de requisição inválida",
+                "value": {
+                  "error": "Id não informado"
+                }
+              },
+              "validationError": {
+                "summary": "Erro de validação de campos",
+                "value": {
+                  "error": {
+                    "issues": [
+                      {
+                        "code": "too_small",
+                        "minimum": 3,
+                        "type": "string",
+                        "inclusive": true,
+                        "exact": false,
+                        "message": "Nome deve conter pelo menos 3 caracteres",
+                        "path": ["name"]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Não autorizado - credenciais inválidas ou token expirado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/ApiError"
+                },
+                {
+                  "$ref": "#/components/schemas/JWTError"
+                }
+              ]
+            },
+            "examples": {
+              "unauthorized": {
+                "summary": "Credenciais inválidas",
+                "value": {
+                  "error": "Credenciais inválidas"
+                }
+              },
+              "jwtError": {
+                "summary": "Token JWT inválido",
+                "value": {
+                  "error": "Token ausente / inválido"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Acesso negado - usuário não tem permissão para acessar este recurso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "example": {
+              "error": "Você não tem permissão para acessar este recurso"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Recurso não encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "example": {
+              "error": "Usuário não encontrado / Tarefa não encontrada"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflito - recurso já existe ou há conflito de estado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "examples": {
+              "emailConflict": {
+                "summary": "Conflito de emails",
+                "value": {
+                  "error": "Email já utilizado"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Erro interno do servidor",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "example": {
+              "error": "Internal server error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "token"
+      }
+    }
+  }
+}
