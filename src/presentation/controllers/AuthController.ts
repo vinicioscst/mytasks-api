@@ -1,5 +1,6 @@
 import { AuthApplicationService } from '@/application/services/AuthApplicationService'
 import { env } from '@/shared/config/env'
+import { NotFoundError } from '@/shared/helpers/ApiErrors'
 import { TokenPayload } from '@/shared/types/token-payload'
 import { Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
@@ -26,5 +27,19 @@ export class AuthController {
         expires: new Date(exp * 1000)
       })
       .json({ user, accessToken })
+  }
+
+  async logout(_req: Request, res: Response) {
+    const { user } = res.locals
+    if (!user) throw new NotFoundError('Usuário não encontrado')
+
+    res
+      .status(204)
+      .cookie('refreshToken', '', {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(0)
+      })
+      .end()
   }
 }

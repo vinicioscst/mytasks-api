@@ -14,9 +14,6 @@ usersRoutes.use('', authMiddleware)
 usersRoutes.get('/profile', (req: Request, res: Response) =>
   userController.readUser(req, res)
 )
-usersRoutes.post('/logout', (req: Request, res: Response) =>
-  userController.logoutUser(req, res)
-)
 usersRoutes.patch('/:id', (req: Request, res: Response) =>
   userController.updateUser(req, res)
 )

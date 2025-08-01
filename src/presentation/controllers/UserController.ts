@@ -25,20 +25,6 @@ export class UserController {
     })
   }
 
-  async logoutUser(_req: Request, res: Response) {
-    const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
-
-    res
-      .status(204)
-      .cookie('refreshToken', '', {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(0)
-      })
-      .end()
-  }
-
   async updateUser(req: Request, res: Response) {
     const { body } = req
     const { id } = req.params
