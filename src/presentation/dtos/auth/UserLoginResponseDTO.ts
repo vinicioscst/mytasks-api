@@ -9,7 +9,8 @@ export const UserLoginResponseDTO = z.object({
     avatar: z.string(),
     tasks: z.array(CreateTaskResponseDTO)
   }),
-  token: z.string()
+  accessToken: z.jwt(),
+  refreshToken: z.jwt()
 })
 
 export type TUserLoginResponseDTO = z.infer<typeof UserLoginResponseDTO>

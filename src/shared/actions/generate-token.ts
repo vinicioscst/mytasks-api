@@ -1,19 +1,24 @@
 import { sign } from 'jsonwebtoken'
 import { env } from '../config/env'
+import ms from 'ms'
+
+interface IPayload {
+  id: string
+  email: string
+  type?: 'refresh'
+}
 
 export function generateToken(
-  id: string,
-  email: string,
-  expiration: number
-): string {
+  payload: IPayload,
+  expiresIn: number | ms.StringValue | undefined
+) {
   const token = sign(
     {
-      id,
-      email
+      ...payload
     },
     env.JWT_SECRET,
     {
-      expiresIn: expiration
+      expiresIn
     }
   )
 

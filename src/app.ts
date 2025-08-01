@@ -3,6 +3,7 @@ import { usersRoutes } from './presentation/routes/usersRoutes'
 import { tasksRoutes } from './presentation/routes/tasksRoutes'
 import { authRoute } from './presentation/routes/authRoute'
 import { errorHandlerMiddleware } from './presentation/middlewares/errorHandlerMiddleware'
+import { responseInterceptorMiddleware } from './presentation/middlewares/responseInterceptor.middleware'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { serve, setup } from 'swagger-ui-express'
@@ -20,6 +21,8 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
   })
 )
+
+app.use(responseInterceptorMiddleware)
 
 app.use(
   '/api/docs',

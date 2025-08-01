@@ -1,32 +1,55 @@
-import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
-import { env } from '@/shared/config/env'
+import { generateToken } from '@/shared/actions/generate-token'
+import { verifyTokenAuthorization } from '@/shared/actions/verify-token-authorization'
+import { verifyTokenValidation } from '@/shared/actions/verify-token-validation'
 import { UnauthorizedError } from '@/shared/helpers/ApiErrors'
-import { TokenPayload } from '@/shared/types/token-payload'
 import { NextFunction, Request, Response } from 'express'
-import { verify } from 'jsonwebtoken'
 
 export async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const token = req.cookies.token
-  if (!token) throw new UnauthorizedError('Token ausente')
+  const { refreshToken } = req.cookies
+  const accessToken = req.headers.authorization?.replace('Bearer ', '')
 
-  const { id, email, exp } = verify(token, env.JWT_SECRET) as TokenPayload
+  if (!refreshToken && !accessToken)
+    throw new UnauthorizedError('Token ausente')
 
-  const expirationTime = exp * 1000
-  const currentTime = Date.now()
+  let tokenPayload = null
 
-  if (currentTime >= expirationTime)
-    throw new UnauthorizedError('Token inválido')
+  if (accessToken) {
+    tokenPayload = verifyTokenValidation(accessToken, false)
 
-  const user = await new DrizzleUserRepository().findById(id)
-  if (!user || user.email !== email)
-    throw new UnauthorizedError('Token inválido')
+    if (tokenPayload) {
+      const { password, ...userInfo } = await verifyTokenAuthorization(
+        tokenPayload.id,
+        tokenPayload.email
+      )
 
-  const { password, ...userInfo } = user
-  res.locals.user = userInfo
+      res.locals.user = userInfo
 
-  next()
+      next()
+    }
+  }
+
+  if (!tokenPayload && refreshToken) {
+    tokenPayload = verifyTokenValidation(refreshToken, true)
+
+    if (tokenPayload) {
+      const { password, ...userInfo } = await verifyTokenAuthorization(
+        tokenPayload.id,
+        tokenPayload.email
+      )
+
+      const accessToken = generateToken(
+        { id: userInfo.id, email: userInfo.email },
+        '15m'
+      )
+
+      res.locals.user = userInfo
+      res.locals.accessToken = accessToken
+
+      next()
+    }
+  }
 }

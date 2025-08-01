@@ -5,6 +5,7 @@ import { hash } from 'bcryptjs'
 import { ConflictError, NotFoundError } from '@/shared/helpers/ApiErrors'
 import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
 import { createHash } from 'node:crypto'
+import { generateToken } from '@/shared/actions/generate-token'
 
 export class UserService {
   userRepository: IUserRepository
@@ -38,6 +39,8 @@ export class UserService {
     const user = await this.userRepository.findById(userId)
     if (!user) throw new NotFoundError('Usuário não encontrado')
 
+    let accessToken = null
+
     if (userData.password) {
       userData.password = await hash(userData.password, 10)
     }
@@ -49,13 +52,15 @@ export class UserService {
         .digest('hex')
 
       userData.avatar = `https://gravatar.com/avatar/${avatar}`
+
+      accessToken = generateToken({ id: user.id, email: userData.email }, '15m')
     }
 
     user.updateUser(userData)
 
     await this.userRepository.save(user)
 
-    return user
+    return { user, ...(accessToken && { accessToken }) }
   }
 
   async deleteUser(userId: string) {

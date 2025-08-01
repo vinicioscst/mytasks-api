@@ -13,16 +13,18 @@ export class AuthController {
 
   async login(req: Request, res: Response) {
     const { body } = req
-    const { user, token } = await this.authApplicationService.login(body)
+    const { user, accessToken, refreshToken } =
+      await this.authApplicationService.login(body)
 
-    const { exp } = verify(token, env.JWT_SECRET) as TokenPayload
+    const { exp } = verify(refreshToken, env.JWT_SECRET) as TokenPayload
 
     res
       .status(200)
-      .cookie('token', token, {
+      .cookie('refreshToken', refreshToken, {
         httpOnly: true,
+        secure: true,
         expires: new Date(exp * 1000)
       })
-      .json(user)
+      .json({ user, accessToken })
   }
 }

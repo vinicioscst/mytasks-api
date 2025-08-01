@@ -19,10 +19,12 @@ export class AuthService {
     const passwordMatches = await compare(loginData.password, user.password)
     if (!passwordMatches) throw new UnauthorizedError('Credenciais inválidas')
 
-    const tokenExpiration = 60 * 60 * 24
+    const accessToken = generateToken({ id: user.id, email: user.email }, '15m')
+    const refreshToken = generateToken(
+      { id: user.id, email: user.email, type: 'refresh' },
+      '7d'
+    )
 
-    const token = generateToken(user.id, user.email, tokenExpiration)
-
-    return { user, token }
+    return { user, accessToken, refreshToken }
   }
 }

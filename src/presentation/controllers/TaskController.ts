@@ -16,7 +16,9 @@ export class TaskController {
 
     const result = await this.taskApplicationService.createTask(body, user.id)
 
-    res.status(200).json(result)
+    res.status(200).json({
+      task: result
+    })
   }
 
   async updateTask(req: Request, res: Response) {
@@ -26,7 +28,11 @@ export class TaskController {
 
     const result = await this.taskApplicationService.updateTask(body, id)
 
-    res.status(200).json(result)
+    res.status(200).json({
+      task: {
+        id: result.id
+      }
+    })
   }
 
   async deleteTask(req: Request, res: Response) {
