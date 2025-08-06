@@ -1,15 +1,18 @@
-import { JsonWebTokenError, TokenExpiredError, verify } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { env } from '../config/env'
 import { TokenPayload } from '../types/token-payload'
 import { UnauthorizedError } from '../helpers/ApiErrors'
 
 export function verifyTokenValidation(token: string, isRefreshToken: boolean) {
   try {
-    const { id, email, type } = verify(token, env.JWT_SECRET) as TokenPayload
+    const { id, email, type } = jwt.verify(
+      token,
+      env.JWT_SECRET
+    ) as TokenPayload
 
     return { id, email, ...(type && { type: type }) }
   } catch (error) {
-    if (error instanceof TokenExpiredError) {
+    if (error instanceof jwt.TokenExpiredError) {
       if (isRefreshToken) {
         throw new UnauthorizedError('Token expirado')
       } else {
@@ -17,9 +20,9 @@ export function verifyTokenValidation(token: string, isRefreshToken: boolean) {
       }
     }
 
-    if (error instanceof JsonWebTokenError) {
+    if (error instanceof jwt.JsonWebTokenError) {
       if (isRefreshToken) {
-        throw new JsonWebTokenError(error.message)
+        throw new jwt.JsonWebTokenError(error.message)
       } else {
         return null
       }

@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { env } from '../config/env'
 import ms from 'ms'
 
@@ -12,7 +12,7 @@ export function generateToken(
   payload: IPayload,
   expiresIn: number | ms.StringValue | undefined
 ) {
-  const token = sign(
+  const token = jwt.sign(
     {
       ...payload
     },

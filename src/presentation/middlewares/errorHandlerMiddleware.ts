@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { ApiError } from '@/shared/helpers/ApiErrors'
 import { ZodError, z } from 'zod/v4'
-import { JsonWebTokenError } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 export function errorHandlerMiddleware(
   error: Error,
@@ -17,7 +17,7 @@ export function errorHandlerMiddleware(
     return res.status(400).json({ error: z.prettifyError(error) })
   }
 
-  if (error instanceof JsonWebTokenError) {
+  if (error instanceof jwt.JsonWebTokenError) {
     return res.status(401).json({ error: error.message })
   }
 

@@ -3,7 +3,7 @@ import { env } from '@/shared/config/env'
 import { NotFoundError } from '@/shared/helpers/ApiErrors'
 import { TokenPayload } from '@/shared/types/token-payload'
 import { Request, Response } from 'express'
-import { verify } from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 export class AuthController {
   authApplicationService: AuthApplicationService
@@ -17,7 +17,7 @@ export class AuthController {
     const { user, accessToken, refreshToken } =
       await this.authApplicationService.login(body)
 
-    const { exp } = verify(refreshToken, env.JWT_SECRET) as TokenPayload
+    const { exp } = jwt.verify(refreshToken, env.JWT_SECRET) as TokenPayload
 
     res
       .status(200)
