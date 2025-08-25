@@ -1,6 +1,6 @@
+import type { Request, Response } from 'express'
 import { TaskApplicationService } from '@/application/services/TaskApplicationService'
 import { BadRequestError, NotFoundError } from '@/shared/helpers/ApiErrors'
-import { Request, Response } from 'express'
 
 export class TaskController {
   taskApplicationService: TaskApplicationService
@@ -14,7 +14,7 @@ export class TaskController {
     const { user } = res.locals
     if (!user) throw new NotFoundError('Usuário não encontrado')
 
-    const result = await this.taskApplicationService.createTask(body, user.id)
+    const result = await this.taskApplicationService.createTask(body, user)
 
     res.status(200).json({
       task: result
@@ -25,8 +25,10 @@ export class TaskController {
     const { body } = req
     const { id } = req.params
     if (!id) throw new BadRequestError('Id não informado')
+    const { user } = res.locals
+    if (!user) throw new NotFoundError('Usuário não encontrado')
 
-    const result = await this.taskApplicationService.updateTask(body, id)
+    const result = await this.taskApplicationService.updateTask(body, id, user)
 
     res.status(200).json({
       task: {
@@ -38,17 +40,19 @@ export class TaskController {
   async deleteTask(req: Request, res: Response) {
     const { id } = req.params
     if (!id) throw new BadRequestError('Id não informado')
+    const { user } = res.locals
+    if (!user) throw new NotFoundError('Usuário não encontrado')
 
-    await this.taskApplicationService.deleteTask(id)
+    await this.taskApplicationService.deleteTask(id, user)
 
     res.status(204).json()
   }
 
-  async deleteCompletedTasks(req: Request, res: Response) {
-    const userId = res.locals.user!.id
-    if (!userId) throw new NotFoundError('Usuário não encontrado')
+  async deleteCompletedTasks(_req: Request, res: Response) {
+    const { user } = res.locals
+    if (!user) throw new NotFoundError('Usuário não encontrado')
 
-    await this.taskApplicationService.deleteCompletedTasks(userId)
+    await this.taskApplicationService.deleteCompletedTasks(user.id)
 
     res.status(204).json()
   }

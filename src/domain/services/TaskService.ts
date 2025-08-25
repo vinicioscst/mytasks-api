@@ -1,8 +1,7 @@
 import { DrizzleTaskRepository } from '@/infrastructure/repositories/DrizzleTaskRepository'
-import { ITaskRepository } from '../repositories/ITaskRepository'
-import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
-import { TUpdateTaskRequestDTO } from '@/presentation/dtos/task/UpdateTaskRequestDTO'
-import { Task } from '../entities/Task'
+import type { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
+import type { TUpdateTaskRequestDTO } from '@/presentation/dtos/task/UpdateTaskRequestDTO'
+import type { ITaskRepository } from '../repositories/ITaskRepository'
 
 export class TaskService {
   taskRepository: ITaskRepository
@@ -28,8 +27,10 @@ export class TaskService {
   }
 
   async deleteTask(id: string) {
-    await this.taskRepository.findById(id)
-    await this.taskRepository.delete(id)
+    const task = await this.taskRepository.findById(id)
+    await this.taskRepository.delete(task.id)
+
+    return task
   }
 
   async deleteCompletedTasks(userId: string) {

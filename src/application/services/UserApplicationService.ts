@@ -1,4 +1,6 @@
 import { UserService } from '@/domain/services/UserService'
+import { welcomeTemplate } from '@/infrastructure/email/templates/welcome-template'
+import { publishToQueue } from '@/infrastructure/rabbitmq/rabbitmq'
 import { CreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
 import { CreateUserResponseDTO } from '@/presentation/dtos/user/CreateUserResponseDTO'
 import { UpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
@@ -14,6 +16,14 @@ export class UserApplicationService {
   async createUser(body: unknown) {
     const parsedBody = CreateUserRequestDTO.parse(body)
     const newUser = await this.userService.createUser(parsedBody)
+
+    const welcomeEmailPayload = {
+      to: newUser.email,
+      subject: 'Bem-vindo ao MyTasksApp!',
+      html: welcomeTemplate(newUser.name)
+    }
+    await publishToQueue('welcome_email_queue', welcomeEmailPayload)
+
     const response = CreateUserResponseDTO.parse(newUser)
 
     return response
