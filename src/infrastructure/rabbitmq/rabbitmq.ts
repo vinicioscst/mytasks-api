@@ -11,7 +11,11 @@ async function connect() {
   }
 
   try {
-    connection = await amqp.connect(RABBITMQ_URL)
+    connection = await amqp.connect(RABBITMQ_URL, {
+      clientProperties: {
+        connection_name: 'EmailSender'
+      }
+    })
     channel = await connection.createChannel()
     return channel
   } catch (error) {

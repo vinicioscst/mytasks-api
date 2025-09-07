@@ -22,7 +22,7 @@ export class UserApplicationService {
       subject: 'Bem-vindo ao MyTasksApp!',
       html: welcomeTemplate(newUser.name)
     }
-    await publishToQueue('welcome_email_queue', welcomeEmailPayload)
+    await publishToQueue('email_queue', welcomeEmailPayload)
 
     const response = CreateUserResponseDTO.parse(newUser)
 

@@ -33,7 +33,7 @@ export class TaskApplicationService {
       subject: `Nova Tarefa Criada: ${newTask.title}`,
       html: newTaskTemplate(author.name, newTask)
     }
-    await publishToQueue('task_notification_queue', creationEmailPayload)
+    await publishToQueue('email_queue', creationEmailPayload)
 
     const response = CreateTaskResponseDTO.parse(newTask)
 
@@ -50,7 +50,7 @@ export class TaskApplicationService {
       subject: `Tarefa Atualizada: ${updatedTask.title}`,
       html: updateTaskTemplate(author.name, updatedTask)
     }
-    await publishToQueue('task_notification_queue', updateEmailPayload)
+    await publishToQueue('email_queue', updateEmailPayload)
 
     return response
   }
@@ -63,7 +63,7 @@ export class TaskApplicationService {
       subject: `Tarefa Excluída: ${deletedTask.title}`,
       html: deleteTaskTemplate(author.name, deletedTask)
     }
-    await publishToQueue('task_notification_queue', deletionEmailPayload)
+    await publishToQueue('email_queue', deletionEmailPayload)
   }
 
   async deleteCompletedTasks(userId: string) {
