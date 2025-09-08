@@ -1,15 +1,13 @@
-import { User } from '@/domain/entities/User'
-import { IUserRepository } from '@/domain/repositories/IUserRepository'
+import { eq } from 'drizzle-orm'
+import { Task } from '@/domain/entities/task'
+import { User } from '@/domain/entities/user'
+import type { IUserRepository } from '@/domain/repositories/IUserRepository'
+import type { TCreateUserRequestWithAvatarDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
+import { ApiError, NotFoundError } from '@/shared/helpers/ApiErrors'
 import { db } from '../data'
 import { usersTable } from '../data/schemas'
-import { eq } from 'drizzle-orm'
-import { TCreateUserRequestWithAvatarDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
-import { Task } from '@/domain/entities/Task'
-import { ApiError, NotFoundError } from '@/shared/helpers/ApiErrors'
 
 export class DrizzleUserRepository implements IUserRepository {
-  constructor() {}
-
   async findById(id: string): Promise<User> {
     const user = await db.query.usersTable.findFirst({
       where: eq(usersTable.id, id),
@@ -18,7 +16,8 @@ export class DrizzleUserRepository implements IUserRepository {
       }
     })
 
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user)
+      throw new NotFoundError('Usuário não encontrado', 'DrizzleUserRepository')
 
     const tasks = user.tasks.map((task) => {
       if (!task) {
@@ -83,7 +82,11 @@ export class DrizzleUserRepository implements IUserRepository {
   async create(user: TCreateUserRequestWithAvatarDTO): Promise<User> {
     const [newUser] = await db.insert(usersTable).values(user).returning()
     if (!newUser) {
-      throw new ApiError('Falha ao criar o usuário', 500)
+      throw new ApiError(
+        'Falha ao criar o usuário',
+        500,
+        'DrizzleUserRepository'
+      )
     }
 
     const userWithTasks = await db.query.usersTable.findFirst({
@@ -91,7 +94,7 @@ export class DrizzleUserRepository implements IUserRepository {
       with: { tasks: true }
     })
     if (!userWithTasks) {
-      throw new NotFoundError('Usuário não encontrado')
+      throw new NotFoundError('Usuário não encontrado', 'DrizzleUserRepository')
     }
 
     const tasks = userWithTasks.tasks.map((task) => {

@@ -1,4 +1,4 @@
-import type { Task } from '@/domain/entities/Task'
+import type { Task } from '@/domain/entities/task'
 import { TaskService } from '@/domain/services/TaskService'
 import { deleteTaskTemplate } from '@/infrastructure/email/templates/delete-task-template'
 import { newTaskTemplate } from '@/infrastructure/email/templates/new-task-template'
@@ -29,7 +29,7 @@ export class TaskApplicationService {
     const newTask = await this.taskService.createTask(parsedBody, author.id)
 
     const creationEmailPayload = {
-      to: author.email,
+      receiver: author,
       subject: `Nova Tarefa Criada: ${newTask.title}`,
       html: newTaskTemplate(author.name, newTask)
     }
@@ -46,7 +46,7 @@ export class TaskApplicationService {
     const response = UpdateTaskResponseDTO.parse(updatedTask)
 
     const updateEmailPayload = {
-      to: author.email,
+      receiver: author,
       subject: `Tarefa Atualizada: ${updatedTask.title}`,
       html: updateTaskTemplate(author.name, updatedTask)
     }
@@ -59,7 +59,7 @@ export class TaskApplicationService {
     const deletedTask = await this.taskService.deleteTask(id)
 
     const deletionEmailPayload = {
-      to: author.email,
+      receiver: author,
       subject: `Tarefa Excluída: ${deletedTask.title}`,
       html: deleteTaskTemplate(author.name, deletedTask)
     }

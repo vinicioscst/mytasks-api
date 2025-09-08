@@ -18,7 +18,7 @@ export class UserApplicationService {
     const newUser = await this.userService.createUser(parsedBody)
 
     const welcomeEmailPayload = {
-      to: newUser.email,
+      receiver: newUser,
       subject: 'Bem-vindo ao MyTasksApp!',
       html: welcomeTemplate(newUser.name)
     }

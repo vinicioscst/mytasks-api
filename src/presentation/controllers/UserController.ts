@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 import { UserApplicationService } from '@/application/services/UserApplicationService'
 import { BadRequestError, NotFoundError } from '@/shared/helpers/ApiErrors'
 
@@ -18,7 +18,7 @@ export class UserController {
 
   async readUser(_req: Request, res: Response) {
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     res.status(200).json({
       user
@@ -28,7 +28,7 @@ export class UserController {
   async updateUser(req: Request, res: Response) {
     const { body } = req
     const { id } = req.params
-    if (!id) throw new BadRequestError('Id não informado')
+    if (!id) throw new BadRequestError('Id não informado', 'controller')
 
     const result = await this.userApplicationService.updateUser(body, id)
 
@@ -37,7 +37,7 @@ export class UserController {
 
   async deleteUser(req: Request, res: Response) {
     const { id } = req.params
-    if (!id) throw new BadRequestError('Id não informado')
+    if (!id) throw new BadRequestError('Id não informado', 'controller')
 
     await this.userApplicationService.deleteUser(id)
 

@@ -1,5 +1,5 @@
-import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
-import { Task } from './Task'
+import type { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
+import type { Task } from './task'
 
 export class User {
   constructor(

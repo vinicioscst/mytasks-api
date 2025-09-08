@@ -1,11 +1,11 @@
-import { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
-import { IUserRepository } from '../repositories/IUserRepository'
-import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
-import { hash } from 'bcryptjs'
-import { ConflictError, NotFoundError } from '@/shared/helpers/ApiErrors'
-import { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
 import { createHash } from 'node:crypto'
+import { hash } from 'bcryptjs'
+import { DrizzleUserRepository } from '@/infrastructure/repositories/DrizzleUserRepository'
+import type { TCreateUserRequestDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
+import type { TUpdateUserRequestDTO } from '@/presentation/dtos/user/UpdateUserRequestDTO'
 import { generateToken } from '@/shared/actions/generate-token'
+import { ConflictError, NotFoundError } from '@/shared/helpers/ApiErrors'
+import type { IUserRepository } from '../repositories/IUserRepository'
 
 export class UserService {
   userRepository: IUserRepository
@@ -18,7 +18,8 @@ export class UserService {
     const userAlreadyExists = await this.userRepository.findByEmail(
       userData.email
     )
-    if (userAlreadyExists) throw new ConflictError('Email já utilizado')
+    if (userAlreadyExists)
+      throw new ConflictError('Email já utilizado', 'UserService')
 
     userData.password = await hash(userData.password, 10)
 
@@ -37,7 +38,7 @@ export class UserService {
 
   async updateUser(userData: TUpdateUserRequestDTO, userId: string) {
     const user = await this.userRepository.findById(userId)
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'UserService')
 
     let accessToken = null
 

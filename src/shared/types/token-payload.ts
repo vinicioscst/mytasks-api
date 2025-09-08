@@ -1,4 +1,4 @@
-export type TokenPayload = {
+export interface ITokenPayload {
   id: string
   email: string
   type?: string

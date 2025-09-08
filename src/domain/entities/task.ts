@@ -1,4 +1,4 @@
-import { TUpdateTaskRequestDTO } from '@/presentation/dtos/task/UpdateTaskRequestDTO'
+import type { TUpdateTaskRequestDTO } from '@/presentation/dtos/task/UpdateTaskRequestDTO'
 
 export class Task {
   constructor(

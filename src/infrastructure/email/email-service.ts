@@ -1,5 +1,9 @@
 import nodemailer from 'nodemailer'
+import { LoggerService } from '@/domain/services/LoggerService'
 import { env } from '@/shared/config/env'
+import type { Author } from '@/shared/types/author'
+
+const loggerService = new LoggerService()
 
 const transporter = nodemailer.createTransport({
   host: env.EMAIL_HOST,
@@ -12,25 +16,28 @@ const transporter = nodemailer.createTransport({
 })
 
 interface EmailPayload {
-  to: string
+  receiver: Author
   subject: string
   html: string
 }
 
 const sendEmail = async (payload: EmailPayload) => {
+  const { email } = payload.receiver
+
   const mailOptions = {
     from: `'${env.EMAIL_FROM_NAME}' <${env.EMAIL_FROM_EMAIL}>`,
-    to: payload.to,
+    to: email,
     subject: payload.subject,
     html: payload.html
   }
 
-  try {
-    await transporter.sendMail(mailOptions)
-  } catch (error) {
-    console.error('Erro ao enviar o e-mail:', error)
-    throw error
-  }
+  await transporter.sendMail(mailOptions)
+  loggerService.createEmailLog({
+    from: mailOptions.from,
+    to: mailOptions.to,
+    subject: mailOptions.subject,
+    userId: payload.receiver.id
+  })
 }
 
 export { sendEmail }

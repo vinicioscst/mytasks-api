@@ -12,7 +12,8 @@ export class TaskController {
   async createTask(req: Request, res: Response) {
     const { body } = req
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     const result = await this.taskApplicationService.createTask(body, user)
 
@@ -24,9 +25,9 @@ export class TaskController {
   async updateTask(req: Request, res: Response) {
     const { body } = req
     const { id } = req.params
-    if (!id) throw new BadRequestError('Id não informado')
+    if (!id) throw new BadRequestError('Id não informado', 'controller')
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     const result = await this.taskApplicationService.updateTask(body, id, user)
 
@@ -39,9 +40,9 @@ export class TaskController {
 
   async deleteTask(req: Request, res: Response) {
     const { id } = req.params
-    if (!id) throw new BadRequestError('Id não informado')
+    if (!id) throw new BadRequestError('Id não informado', 'controller')
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     await this.taskApplicationService.deleteTask(id, user)
 
@@ -50,7 +51,7 @@ export class TaskController {
 
   async deleteCompletedTasks(_req: Request, res: Response) {
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     await this.taskApplicationService.deleteCompletedTasks(user.id)
 

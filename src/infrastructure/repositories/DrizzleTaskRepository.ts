@@ -1,19 +1,18 @@
-import { Task } from '@/domain/entities/Task'
-import { ITaskRepository } from '@/domain/repositories/ITaskRepository'
+import { and, eq } from 'drizzle-orm'
+import { Task } from '@/domain/entities/task'
+import type { ITaskRepository } from '@/domain/repositories/ITaskRepository'
+import type { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
+import { NotFoundError } from '@/shared/helpers/ApiErrors'
 import { db } from '../data'
 import { tasksTable } from '../data/schemas'
-import { and, eq } from 'drizzle-orm'
-import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
-import { NotFoundError } from '@/shared/helpers/ApiErrors'
 
 export class DrizzleTaskRepository implements ITaskRepository {
-  constructor() {}
-
   async findById(id: string): Promise<Task> {
     const task = await db.query.tasksTable.findFirst({
       where: eq(tasksTable.id, id)
     })
-    if (!task) throw new NotFoundError('Tarefa não encontrada')
+    if (!task)
+      throw new NotFoundError('Tarefa não encontrada', 'DrizzleTaskRepository')
 
     return new Task(
       task.id,

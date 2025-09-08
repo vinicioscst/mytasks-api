@@ -1,9 +1,9 @@
+import type { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 import { AuthApplicationService } from '@/application/services/AuthApplicationService'
 import { env } from '@/shared/config/env'
 import { NotFoundError } from '@/shared/helpers/ApiErrors'
-import { TokenPayload } from '@/shared/types/token-payload'
-import { Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
+import type { ITokenPayload } from '@/shared/types/token-payload'
 
 export class AuthController {
   authApplicationService: AuthApplicationService
@@ -17,7 +17,7 @@ export class AuthController {
     const { user, accessToken, refreshToken } =
       await this.authApplicationService.login(body)
 
-    const { exp } = jwt.verify(refreshToken, env.JWT_SECRET) as TokenPayload
+    const { exp } = jwt.verify(refreshToken, env.JWT_SECRET) as ITokenPayload
 
     res
       .status(200)
@@ -31,7 +31,7 @@ export class AuthController {
 
   async logout(_req: Request, res: Response) {
     const { user } = res.locals
-    if (!user) throw new NotFoundError('Usuário não encontrado')
+    if (!user) throw new NotFoundError('Usuário não encontrado', 'controller')
 
     res
       .status(204)
