@@ -1,0 +1,1 @@
+ALTER TABLE "errors_log" ALTER COLUMN "error_stack" DROP NOT NULL;

@@ -1,5 +1,13 @@
-import { pgTable, uuid, varchar, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  varchar
+} from 'drizzle-orm/pg-core'
 
 export const usersTable = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -10,7 +18,9 @@ export const usersTable = pgTable('users', {
 })
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
-  tasks: many(tasksTable)
+  tasks: many(tasksTable),
+  emailsLog: many(emailsLogTable),
+  errorsLog: many(errorsLogTable)
 }))
 
 export const tasksTable = pgTable('tasks', {
@@ -28,6 +38,51 @@ export const tasksTable = pgTable('tasks', {
 export const tasksRelations = relations(tasksTable, ({ one }) => ({
   user: one(usersTable, {
     fields: [tasksTable.userId],
+    references: [usersTable.id]
+  })
+}))
+
+export const emailsLogTable = pgTable('emails_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sentAt: timestamp('sent_at').defaultNow(),
+  subject: varchar('subject', { length: 120 }).notNull(),
+  from: varchar('from', { length: 120 }).notNull(),
+  to: varchar('to', { length: 120 }).notNull(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => usersTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    })
+})
+
+export const emailsLogRelations = relations(emailsLogTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [emailsLogTable.userId],
+    references: [usersTable.id]
+  })
+}))
+
+export const errorsLogTable = pgTable('errors_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => usersTable.id, {
+    onDelete: 'set null',
+    onUpdate: 'cascade'
+  }),
+  requestContext: varchar('request_context', { length: 100 })
+    .notNull()
+    .default('unknown'),
+  errorMessage: varchar('error_message', { length: 1000 }).notNull(),
+  errorStack: text('error_stack'),
+  httpStatus: integer('http_status').notNull(),
+  requestUrl: varchar('request_url', { length: 500 }).notNull(),
+  requestMethod: varchar('request_method', { length: 10 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow()
+})
+
+export const errorsLogRelations = relations(errorsLogTable, ({ one }) => ({
+  user: one(usersTable, {
+    fields: [errorsLogTable.userId],
     references: [usersTable.id]
   })
 }))

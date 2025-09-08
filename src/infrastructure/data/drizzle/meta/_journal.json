@@ -64,6 +64,20 @@
       "when": 1753108927171,
       "tag": "0008_magical_ares",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1757354442417,
+      "tag": "0009_long_angel",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1757357871438,
+      "tag": "0010_clumsy_nomad",
+      "breakpoints": true
     }
   ]
 }
