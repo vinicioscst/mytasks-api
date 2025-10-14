@@ -6,12 +6,13 @@ import type { Author } from '@/shared/types/author'
 const loggerService = new LoggerService()
 
 const transporter = nodemailer.createTransport({
-  host: env.EMAIL_HOST,
-  port: parseInt(env.EMAIL_PORT, 10),
-  secure: env.EMAIL_SECURE === 'true',
+  service: 'gmail',
   auth: {
-    user: env.EMAIL_USER,
-    pass: env.EMAIL_PASSWORD
+    type: 'OAuth2',
+    user: env.GOOGLE_EMAIL,
+    clientId: env.GOOGLE_CLIENT_ID,
+    clientSecret: env.GOOGLE_CLIENT_SECRET,
+    refreshToken: env.GOOGLE_REFRESH_TOKEN
   }
 })
 
@@ -25,7 +26,7 @@ const sendEmail = async (payload: EmailPayload) => {
   const { email } = payload.receiver
 
   const mailOptions = {
-    from: `'${env.EMAIL_FROM_NAME}' <${env.EMAIL_FROM_EMAIL}>`,
+    from: `'My Tasks' <${env.GOOGLE_EMAIL}>`,
     to: email,
     subject: payload.subject,
     html: payload.html

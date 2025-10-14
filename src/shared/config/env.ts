@@ -13,21 +13,16 @@ const envSchema = z.object({
   RABBITMQ_URL: z
     .string()
     .nonempty({ error: 'RABBITMQ_URL variable is empty' }),
-  EMAIL_HOST: z.string().nonempty({ error: 'EMAIL_HOST variable is empty' }),
-  EMAIL_PORT: z.string().nonempty({ error: 'EMAIL_PORT variable is empty' }),
-  EMAIL_SECURE: z
+  GOOGLE_EMAIL: z.email().nonempty({ error: 'GOOGLE_EMAIL variable is empty' }),
+  GOOGLE_CLIENT_ID: z
     .string()
-    .nonempty({ error: 'EMAIL_SECURE variable is empty' }),
-  EMAIL_USER: z.string().nonempty({ error: 'EMAIL_USER variable is empty' }),
-  EMAIL_PASSWORD: z
+    .nonempty({ error: 'GOOGLE_CLIENT_ID variable is empty' }),
+  GOOGLE_CLIENT_SECRET: z
     .string()
-    .nonempty({ error: 'EMAIL_PASSWORD variable is empty' }),
-  EMAIL_FROM_EMAIL: z
-    .email()
-    .nonempty({ error: 'EMAIL_FROM_EMAIL variable is empty' }),
-  EMAIL_FROM_NAME: z
+    .nonempty({ error: 'GOOGLE_CLIENT_SECRET variable is empty' }),
+  GOOGLE_REFRESH_TOKEN: z
     .string()
-    .nonempty({ error: 'EMAIL_FROM_NAME variable is empty' })
+    .nonempty({ error: 'GOOGLE_REFRESH_TOKEN variable is empty' })
 })
 
 export const env = envSchema.parse(process.env)
