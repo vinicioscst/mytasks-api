@@ -14,7 +14,7 @@ export function verifyTokenValidation(token: string, isRefreshToken: boolean) {
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       if (isRefreshToken) {
-        throw new UnauthorizedError('Token expirado')
+        throw new UnauthorizedError('Token expirado', 'verifyTokenValidation')
       } else {
         return null
       }

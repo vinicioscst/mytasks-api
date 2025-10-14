@@ -11,16 +11,18 @@ export async function permissionMiddleware(
   next: NextFunction
 ): Promise<void> {
   const { user } = res.locals
-  if (!user) throw new UnauthorizedError('Token ausente')
+  if (!user)
+    throw new UnauthorizedError('Token ausente', 'permissionMiddleware')
 
   const { id } = req.params
-  if (!id) throw new BadRequestError('Id não informado')
+  if (!id) throw new BadRequestError('Id não informado', 'permissionMiddleware')
 
   const isUserTask = user.tasks.some(
     (task) => task.id === id && task.userId === user.id
   )
 
-  if (!isUserTask) throw new ForbiddenError('Acesso não permitido')
+  if (!isUserTask)
+    throw new ForbiddenError('Acesso não permitido', 'permissionMiddleware')
 
   next()
 }

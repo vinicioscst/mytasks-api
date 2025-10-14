@@ -13,7 +13,7 @@ export async function authMiddleware(
   const accessToken = req.headers.authorization?.replace('Bearer ', '')
 
   if (!refreshToken && !accessToken)
-    throw new UnauthorizedError('Token ausente')
+    throw new UnauthorizedError('Token ausente', 'authMiddleware')
 
   let tokenPayload = null
 
