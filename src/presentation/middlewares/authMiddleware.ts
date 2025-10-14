@@ -1,8 +1,8 @@
+import type { NextFunction, Request, Response } from 'express'
 import { generateToken } from '@/shared/actions/generate-token'
 import { verifyTokenAuthorization } from '@/shared/actions/verify-token-authorization'
 import { verifyTokenValidation } from '@/shared/actions/verify-token-validation'
 import { UnauthorizedError } from '@/shared/helpers/ApiErrors'
-import { NextFunction, Request, Response } from 'express'
 
 export async function authMiddleware(
   req: Request,

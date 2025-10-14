@@ -1,5 +1,5 @@
-import { TCreateUserRequestWithAvatarDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
-import { User } from '../entities/User'
+import type { TCreateUserRequestWithAvatarDTO } from '@/presentation/dtos/user/CreateUserRequestDTO'
+import type { User } from '../entities/user'
 
 export interface IUserRepository {
   findById(id: string): Promise<User>

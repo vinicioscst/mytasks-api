@@ -1,12 +1,16 @@
-import express, { Request, Response, NextFunction } from 'express'
-import { usersRoutes } from './presentation/routes/usersRoutes'
-import { tasksRoutes } from './presentation/routes/tasksRoutes'
-import { authRoute } from './presentation/routes/authRoute'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
+import express, {
+  type NextFunction,
+  type Request,
+  type Response
+} from 'express'
+import { serve, setup } from 'swagger-ui-express'
 import { errorHandlerMiddleware } from './presentation/middlewares/errorHandlerMiddleware'
 import { responseInterceptorMiddleware } from './presentation/middlewares/responseInterceptor.middleware'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import { serve, setup } from 'swagger-ui-express'
+import { authRoute } from './presentation/routes/authRoute'
+import { tasksRoutes } from './presentation/routes/tasksRoutes'
+import { usersRoutes } from './presentation/routes/usersRoutes'
 import swaggerConfig from './shared/config/swagger.json'
 
 export const app = express()

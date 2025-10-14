@@ -1,5 +1,5 @@
-import { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
-import { Task } from '../entities/Task'
+import type { TCreateTaskRequestDTO } from '@/presentation/dtos/task/CreateTaskRequestDTO'
+import type { Task } from '../entities/task'
 
 export interface ITaskRepository {
   findById(id: string): Promise<Task>

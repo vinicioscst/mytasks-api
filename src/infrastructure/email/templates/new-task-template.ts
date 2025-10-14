@@ -1,4 +1,4 @@
-import type { Task } from '@/domain/entities/Task'
+import type { Task } from '@/domain/entities/task'
 
 export function newTaskTemplate(name: string, task: Task) {
   return `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; background-color: #f4f4f4; margin: 0; padding: 0;">

@@ -1,7 +1,7 @@
-import { Router, Request, Response } from 'express'
+import { type Request, type Response, Router } from 'express'
+import { TaskController } from '../controllers/TaskController'
 import { authMiddleware } from '../middlewares/authMiddleware'
 import { permissionMiddleware } from '../middlewares/permissionMiddleware'
-import { TaskController } from '../controllers/TaskController'
 
 export const tasksRoutes: Router = Router()
 const taskController = new TaskController()

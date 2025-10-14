@@ -1,4 +1,4 @@
-import { Task } from '@/domain/entities/Task'
+import type { Task } from '@/domain/entities/Task'
 
 declare global {
   namespace Express {

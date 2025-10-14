@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
+import type ms from 'ms'
 import { env } from '../config/env'
-import ms from 'ms'
 
 interface IPayload {
   id: string
