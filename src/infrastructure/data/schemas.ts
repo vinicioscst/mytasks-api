@@ -32,7 +32,12 @@ export const tasksTable = pgTable('tasks', {
     mode: 'date'
   }).notNull(),
   isCompleted: boolean('is_completed').notNull().default(false),
-  userId: uuid('user_id').notNull()
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => usersTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    })
 })
 
 export const tasksRelations = relations(tasksTable, ({ one }) => ({
