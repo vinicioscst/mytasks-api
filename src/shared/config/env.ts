@@ -6,6 +6,7 @@ const envSchema = z.object({
     .string()
     .nonempty({ error: 'PORT variable is empty' })
     .transform((val) => Number(val)),
+  APP_URL: z.url().nonempty({ error: 'APP_URL variable is empty' }),
   DATABASE_URL: z
     .string()
     .nonempty({ error: 'DATABASE_URL variable is empty' }),

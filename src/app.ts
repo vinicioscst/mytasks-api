@@ -11,6 +11,7 @@ import { responseInterceptorMiddleware } from './presentation/middlewares/respon
 import { authRoute } from './presentation/routes/authRoute'
 import { tasksRoutes } from './presentation/routes/tasksRoutes'
 import { usersRoutes } from './presentation/routes/usersRoutes'
+import { env } from './shared/config/env'
 import swaggerConfig from './shared/config/swagger.json'
 
 export const app = express()
@@ -19,7 +20,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: env.APP_URL,
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
