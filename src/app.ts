@@ -16,16 +16,18 @@ import swaggerConfig from './shared/config/swagger.json'
 
 export const app = express()
 
-app.use(express.json())
-app.use(cookieParser())
 app.use(
   cors({
     origin: env.APP_URL,
     credentials: true,
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   })
 )
+app.use(express.json())
+app.use(cookieParser())
 
 app.use(responseInterceptorMiddleware)
 
